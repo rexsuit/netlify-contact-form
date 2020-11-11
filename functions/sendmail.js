@@ -2,20 +2,26 @@ const nodemailer = require("nodemailer")
 
 exports.handler = function (event, context, callback) {
   let data = JSON.parse(event.body)
-
-  let transporter = nodemailer.createTransport({
-    host: [process.env.HOST],
-    port: [process.env.PORT],
+  const transportData = {
+    // host: process.env.REACT_APP_EMAIL_HOST,
+    // port: process.env.REACT_APP_EMAIL_PORT,
+    service: process.env.REACT_APP_SERVICE,
+    secure: false,
     auth: {
-      user: [process.env.USER],
-      pass: [process.env.PASS],
+      user: process.env.REACT_APP_USER,
+      pass: process.env.REACT_APP_PASS,
     },
-  })
+    logger: true,
+  }
+
+  console.log({ transportData })
+
+  let transporter = nodemailer.createTransport(transportData)
 
   transporter.sendMail(
     {
-      from: [process.env.EMAIL],
-      to: [process.env.RECIPIENT],
+      from: process.env.REACT_APP_EMAIL,
+      to: process.env.REACT_APP_RECIPIENT,
       subject: `Sending with React, Nodemailer and Netlify`,
       html: `
             <h3>Email from ${data.name} ${data.email}<h3>
@@ -23,6 +29,7 @@ exports.handler = function (event, context, callback) {
             `,
     },
     function (error, info) {
+      console.log(JSON.stringify(error, null, 2))
       if (error) {
         callback(error)
       } else {

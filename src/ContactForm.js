@@ -24,7 +24,14 @@ export function ContactForm() {
     })
   }
 
-  const resetForm = () => setData(defaultState)
+  React.useEffect(() => {
+    console.log({ data })
+  }, [data])
+
+  const resetForm = () => {
+    console.log("trying to reset")
+    setData(defaultState)
+  }
 
   const formSubmit = (e) => {
     e.preventDefault()
@@ -37,6 +44,7 @@ export function ContactForm() {
     axios
       .post("/api/sendmail", data)
       .then((res) => {
+        console.log({ res })
         if (res.data.result !== "success") {
           setData({
             ...data,
@@ -59,7 +67,8 @@ export function ContactForm() {
           }, 6000)
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log({ err })
         setData({
           ...data,
           buttonText: "Failed to send",
@@ -73,6 +82,7 @@ export function ContactForm() {
       <FormControl fullWidth={true}>
         <TextField
           onChange={handleChange}
+          value={data.name}
           required
           label="Full name"
           variant="filled"
@@ -84,6 +94,7 @@ export function ContactForm() {
       <FormControl fullWidth={true}>
         <TextField
           onChange={handleChange}
+          value={data.email}
           required
           label="Email"
           id="email"
@@ -95,6 +106,7 @@ export function ContactForm() {
       <FormControl fullWidth={true}>
         <TextField
           onChange={handleChange}
+          value={data.message}
           required
           label="Message"
           variant="filled"
